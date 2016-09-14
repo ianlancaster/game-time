@@ -13,6 +13,66 @@ describe('Obstacle', function(){
     assert.isFunction(Obstacle, true);
   });
 
+  it('should have a method called "draw()"', function (){
+    var player = new Player(gameWorld, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+    assert.isFunction(obstacle.draw);
+  });
+
+  it('should have a method called "topRight()"', function (){
+    var player = new Player(gameWorld, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+      assert.isFunction(obstacle.topRight);
+  });
+
+  it('"topRight()" should return both the x,y coordinates of its top right corner', function(){
+    var player = new Player(gameWorld, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+
+    assert.equal(obstacle.topRight().x, 250);
+    assert.equal(obstacle.topRight().y, 250);
+  });
+
+  it('should have a method called "topLeft()"', function (){
+    var player = new Player(gameWorld, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+    assert.isFunction(obstacle.topLeft);
+  });
+
+  it('"topLeft()" should return both the x,y coordinates of its top right corner', function(){
+    var player = new Player(gameWorld, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+    assert.equal(obstacle.topLeft().x, 200);
+    assert.equal(obstacle.topLeft().y, 250);
+  });
+
+  it('should have a method called "bottomRight()"', function (){
+    var player = new Player(gameWorld, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+    assert.isFunction(obstacle.bottomRight);
+  });
+
+  it('"bottomRight()" should return both the x,y coordinates of its bottom right corner', function(){
+    var player = new Player(gameWorld, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+    assert.equal(obstacle.bottomRight().x, 250);
+    assert.equal(obstacle.bottomRight().y, 270);
+  });
+
+  it('should have a method called "bottomLeft()"', function (){
+    var player = new Player(gameWorld, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+    assert.isFunction(obstacle.bottomLeft);
+  });
+
+  it('"bottomLeft()" should return both the x,y coordinates of its bottom right corner', function(){
+    var player = new Player(gameWorld, 200, 250, 20, 50);
+    var obstacle = new Obstacle(gameWorld, player, 200, 250, 20, 50);
+    assert.equal(obstacle.bottomLeft().x, 200);
+    assert.equal(obstacle.bottomLeft().y, 270);
+  });
+
   it('should collide if player bottom right corner overlaps wth objects top left', function(){
     var player = new Player(null, 6, 6, 5, 5);
     var obstacle = new Obstacle(gameWorld, player, 10, 10, 10, 10);
