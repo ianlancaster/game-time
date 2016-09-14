@@ -1,12 +1,2 @@
-var ch = require('chai');
-
-describe('GameWorld', function () {
-
-
-  it('should be a function', function () {
-    ch.assert.isFunction(GameWorld);
-  });
-
-
-
-});
+require('./player-test.js');
+require('./world-test.js')
