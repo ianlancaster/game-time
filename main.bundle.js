@@ -54,12 +54,13 @@
 
 	var gameWorld = new GameWorld(560, 700, world);
 
-	var timeoutMouse;
+	// var timeoutMouse;
 	var timeoutSpacebar;
 	var mousePressed = false;
 
-	$document.on('load', function () {
+	$document.ready(function () {
 	  gameWorld.loadImages();
+	  gameWorld.init();
 	});
 
 	$document.keypress(function (e) {
@@ -73,7 +74,10 @@
 	      gameLoop();
 
 	      timeoutSpacebar = setInterval(function () {
-	        gameWorld.player.moveUp();
+	        gameWorld.playerFish.moveUp();
+	        gameWorld.playerHitBoxes.forEach(function (hitBox) {
+	          return hitBox.moveUp();
+	        });
 	      }, 8);
 	    }
 	  }
@@ -88,37 +92,38 @@
 	  }
 	});
 
-	$world.on('mousedown', function (event) {
-	  event.preventDefault();
-	  switch (event.which) {
-	    case 3:
-	      // gameWorld.pause
-	      break;
-	    default:
-	      if (mousePressed === false) {
-	        mousePressed = true;
+	// $world.on('mousedown',function(event){
+	//   event.preventDefault();
+	//   switch(event.which){
+	//     case 3:
+	//       // gameWorld.pause
+	//       break;
+	//     default:
+	//     if(mousePressed === false){
+	//       mousePressed = true;
+	//
+	//       gameWorld.mouseDown();
+	//       gameLoop();
+	//
+	//       timeoutMouse = setInterval(function(){
+	//          gameWorld.player.moveUp();
+	//        },8);
+	//     }
+	//   }
+	// });
+	//
+	// $world.on('mouseup',function(){
+	//   mousePressed = false;
+	//   clearInterval(timeoutMouse);
+	//   gameWorld.mouseUp();
+	// });
+	//
+	// $world.on('mouseleave', function(){
+	//   mousePressed = false;
+	//   clearInterval(timeoutMouse);
+	//   gameWorld.mouseUp();
+	// });
 
-	        gameWorld.mouseDown();
-	        gameLoop();
-
-	        timeoutMouse = setInterval(function () {
-	          gameWorld.player.moveUp();
-	        }, 8);
-	      }
-	  }
-	});
-
-	$world.on('mouseup', function () {
-	  mousePressed = false;
-	  clearInterval(timeoutMouse);
-	  gameWorld.mouseUp();
-	});
-
-	$world.on('mouseleave', function () {
-	  mousePressed = false;
-	  clearInterval(timeoutMouse);
-	  gameWorld.mouseUp();
-	});
 
 	////something happens
 
@@ -134,8 +139,6 @@
 	    });
 	  }
 	};
-
-	gameWorld.init();
 
 /***/ },
 /* 1 */
@@ -10235,22 +10238,69 @@
 	  this.width = width || 700;
 	  this.playerImage = new Image();
 	  this.playerImage.src = './lib/imgs/googlyfish.png';
-	  this.player = new Player(this.world, null, null, 80, 200, "image", this.playerImage); //Player(world, x, y, height, width, type, image)
+	  this.playerFish = new Player(this.world, null, null, null, null, "image", this.playerImage); //Player(world, x, y, height, width, type, image)
+	  this.playerHitBoxes = [];
 	  this.scoreboard = new Scoreboard(this.world);
 	  this.ceiling = [];
 	  this.floor = [];
 	  this.rocks = [];
+	  this.food = [];
 	  this.collision = false;
 	  this.distanceCount = 0;
 	  this.difficultyFactor = 1;
 	  this.rockHeight = 70;
 
+	  this.initHitBoxes = function () {
+	    this.playerHitBoxes[0] = new Player(this.world, 185, 265, 15, 90, "box");
+	    this.playerHitBoxes[1] = new Player(this.world, 200, 255, 20, 65, "box");
+	    this.playerHitBoxes[2] = new Player(this.world, 210, 265, 20, 50, "box");
+	  };
+
+	  this.obstacleWidth = 26;
+	  this.numberOfWallSections = Math.floor(this.width / this.obstacleWidth + 3);
+
 	  this.initObstacles = function () {
-	    for (var i = 0; i < 21; i++) {
-	      this.ceiling.push(new Obstacle(this.world, this.player, i * 36, 0, 20, 36));
-	      this.floor.push(new Obstacle(this.world, this.player, i * 36, this.height - 80, 20, 36));
+	    for (var i = 0; i < this.numberOfWallSections; i++) {
+	      this.ceiling.push(new Obstacle(this.world, this.playerHitBoxes, i * this.obstacleWidth, 0, 20, this.obstacleWidth));
+	      this.floor.push(new Obstacle(this.world, this.playerHitBoxes, i * this.obstacleWidth, this.height - 80, 20, this.obstacleWidth));
 	    }
 	    this.drawObstacles();
+	  };
+
+	  this.moveObstacles = function () {
+	    for (var i = 0; i < this.numberOfWallSections; i++) {
+	      this.ceiling[i].move();
+	      this.floor[i].move();
+	      this.collision = this.ceiling[i].collisionDetectAllBoxes() || this.floor[i].collisionDetectAllBoxes();
+	      if (this.collision === true) {
+	        this.renderEndText();
+	        this.scoreboard.updateHighScore();
+	        this.running = false;
+	      }
+	    }
+
+	    for (var j = 0; j < this.rocks.length; j++) {
+	      this.rocks[j].move();
+	      this.collision = this.rocks[j].collisionDetectAllBoxes();
+	      if (this.collision === true) {
+	        this.renderEndText();
+	        this.scoreboard.updateHighScore();
+	        this.running = false;
+	      }
+	    }
+	  };
+
+	  this.shiftObstacles = function () {
+	    if (this.distanceCount % 25 === 0) {
+	      this.difficultyFactor = this.difficultyFactor + 0.1;
+	    }
+
+	    var newHeight = this.generateNewObstacleHeight(this.difficultyFactor);
+
+	    this.ceiling.shift();
+	    this.ceiling.push(new Obstacle(this.world, this.playerHitBoxes, this.width - 1, 0, newHeight, this.obstacleWidth));
+	    this.floor.shift();
+	    this.floor.push(new Obstacle(this.world, this.playerHitBoxes, this.width - 1, this.height - newHeight - 60, newHeight, this.obstacleWidth));
 	  };
 
 	  this.loadImages = function () {
@@ -10261,16 +10311,22 @@
 	    this.clearWorld();
 	    this.scoreboard.retrieveStoredHighScore();
 	    this.initObstacles();
+	    this.initHitBoxes();
 	    this.scoreboard.updateScore(this.distanceCount);
-	    this.player.draw();
-
-	    //draw obstacles
+	    this.playerHitBoxes.forEach(function (hitBox) {
+	      return hitBox.draw;
+	    });
+	    this.playerFish.draw();
+	    this.renderStartText();
 	  };
 
 	  this.mouseDown = function () {
 
 	    if (this.running === true) {
-	      this.player.moveUp();
+	      this.playerHitBoxes.forEach(function (hitBox) {
+	        return hitBox.moveUp();
+	      });
+	      this.playerFish.moveUp();
 	    }
 
 	    if (this.running === false) {
@@ -10288,19 +10344,18 @@
 
 	  this.gameFrame = function () {
 	    this.clearWorld();
-	    this.player.moveDown();
+	    this.playerHitBoxes.forEach(function (hitBox) {
+	      return hitBox.moveDown();
+	    });
+	    this.playerFish.moveDown();
 	    this.moveObstacles();
 	    this.distanceCount++;
-	    if (this.ceiling[20].x < 666) {
+	    if (this.ceiling[this.numberOfWallSections - 1].x < this.width - this.obstacleWidth + 1) {
 	      this.shiftObstacles();
 	    }
 
-	    if (this.distanceCount % 100 === 0) {
-	      this.createNewRock();
-	    }
-
+	    this.randomizeRockCreation();
 	    this.draw();
-	    // this.detectCollisions();
 	    if (this.collision === true) {
 	      this.running = false;
 	      return false;
@@ -10315,51 +10370,56 @@
 	    this.rocks = [];
 	    this.difficultyFactor = 1;
 	    this.distanceCount = 0;
-	    this.player = new Player(this.world, null, null, null, null, "image", this.playerImage); //Player(world, x, y, height, width, type, image)
-	    this.player.draw();
+	    this.playerFish = new Player(this.world, null, null, null, null, "image", this.playerImage);
 	    this.initObstacles();
+	    this.initHitBoxes();
+	    this.playerFish.draw();
+	    this.draw();
 	  };
 
 	  this.setGameOptions = function () {};
 
-	  this.generateNewRockX = function () {
+	  this.renderStartText = function () {
+	    var startText = "Press Spacebar to Start and Play";
+	    this.world.fillStyle = 'purple';
+	    this.world.font = "40px serif";
+	    this.world.fillText(startText, 100, 200);
+	  };
 
+	  this.renderEndText = function () {
+	    var endText1 = "You LOSE!!!!!!!!";
+	    var endText2 = "Press Spacebar to Play Again";
+	    this.world.fillStyle = 'red';
+	    this.world.font = "40px serif";
+	    this.world.fillText(endText1, 180, 200);
+	    this.world.fillText(endText2, 120, 250);
+	  };
+
+	  this.randomizeRockCreation = function () {
+
+	    var min = 130 - this.difficultyFactor * 8;
+	    var max = 200 - this.difficultyFactor * 8;
+	    var randomMod = Math.floor(Math.random() * (max - min) + min);
+
+	    if (this.distanceCount % randomMod === 0) {
+	      this.createNewRock();
+	    }
+	  };
+
+	  this.generateNewRockX = function () {
 	    var min = this.ceiling[20].height;
 	    var max = this.floor[20].y - this.rockHeight;
-
 	    return Math.random() * (max - min) + min;
 	  };
 
 	  this.generateNewRockHeight = function () {
-
 	    var min = 10 * this.difficultyFactor;
 	    var max = 30 * this.difficultyFactor;
-
 	    return Math.random() * (max - min) + min;
 	  };
 
 	  this.createNewRock = function () {
-	    this.rocks.push(new Obstacle(this.world, this.player, 700, this.generateNewRockX(), this.generateNewRockHeight(), 10));
-	  };
-
-	  this.moveObstacles = function () {
-	    for (var i = 0; i < 21; i++) {
-	      this.ceiling[i].move();
-	      this.floor[i].move();
-	      this.collision = this.ceiling[i].collisionDetect() || this.floor[i].collisionDetect();
-	      if (this.collision === true) {
-	        this.scoreboard.updateHighScore();
-	        this.running = false;
-	      }
-	    }
-
-	    for (var j = 0; j < this.rocks.length; j++) {
-	      this.rocks[j].move();
-	      this.collision = this.rocks[j].collisionDetect();
-	      if (this.collision === true) {
-	        this.running = false;
-	      }
-	    }
+	    this.rocks.push(new Obstacle(this.world, this.playerHitBoxes, 700, this.generateNewRockX(), this.generateNewRockHeight(), 10));
 	  };
 
 	  this.generateNewObstacleHeight = function (difficultyFactor) {
@@ -10369,25 +10429,12 @@
 	    return Math.random() * (max - min) + min;
 	  };
 
-	  this.shiftObstacles = function () {
-	    if (this.distanceCount % 25 === 0) {
-	      this.difficultyFactor = this.difficultyFactor + 0.1;
-	      console.log(this.difficultyFactor);
-	    }
-	    var newHeight = this.generateNewObstacleHeight(this.difficultyFactor);
-
-	    this.ceiling.shift();
-	    this.ceiling.push(new Obstacle(this.world, this.player, this.width, 0, newHeight, 36));
-	    this.floor.shift();
-	    this.floor.push(new Obstacle(this.world, this.player, this.width, this.height - newHeight - 60, newHeight, 36));
-	  };
-
 	  this.clearWorld = function () {
 	    this.world.clearRect(0, 0, this.width, this.height);
 	  };
 
 	  this.drawObstacles = function () {
-	    for (var i = 0; i < 21; i++) {
+	    for (var i = 0; i < this.numberOfWallSections; i++) {
 	      this.ceiling[i].draw();
 	      this.floor[i].draw();
 	    }
@@ -10399,7 +10446,10 @@
 
 	  this.draw = function () {
 	    this.drawObstacles();
-	    this.player.draw();
+	    this.playerHitBoxes.forEach(function (hitBox) {
+	      return hitBox.draw();
+	    });
+	    this.playerFish.draw();
 	    this.scoreboard.updateScore(this.distanceCount);
 	  };
 	}
@@ -10412,7 +10462,7 @@
 
 	function Player(world, x, y, height, width, type, image) {
 	  this.world = world;
-	  this.x = x || 200;
+	  this.x = x || 180;
 	  this.y = y || 250;
 	  this.height = height || 40;
 	  this.width = width || 100;
@@ -10420,68 +10470,22 @@
 	  this.image = image;
 	}
 
-	Player.prototype.moveUp = function () {
-	  this.y = this.y - 3;
-	};
-
-	Player.prototype.moveDown = function () {
-	  this.y = this.y + 3;
-	};
-
-	Player.prototype.draw = function () {
-
-	  console.log(this.type);
-
-	  if (this.type === "image") {
-	    this.world.drawImage(this.image, this.x, this.y, this.width, this.height);
-	  } else {
-	    this.world.clearRect(this.x, this.y, this.width, this.height);
-	    this.world.fillStyle = '#85253b';
-	    this.world.fillRect(this.x, this.y, this.width, this.height);
-	  }
-	};
-
-	Player.prototype.topRight = function () {
-	  return { x: this.x + this.width, y: this.y };
-	};
-
-	Player.prototype.topLeft = function () {
-	  return { x: this.x, y: this.y };
-	};
-
-	Player.prototype.bottomRight = function () {
-	  return { x: this.x + this.width, y: this.y + this.height };
-	};
-
-	Player.prototype.bottomLeft = function () {
-	  return { x: this.x, y: this.y + this.height };
-	};
-
-	module.exports = Player;
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	function Obstacle(world, player, x, y, height, width) {
-	  this.world = world;
-	  this.player = player;
-	  this.x = x;
-	  this.y = y;
-	  this.height = height;
-	  this.width = width;
-	}
-
-	Obstacle.prototype = {
-	  draw: function () {
-
-	    this.world.clearRect(this.x, this.y, this.width, this.height);
-	    this.world.fillStyle = '#5E9732';
-	    this.world.fillRect(this.x, this.y, this.width, this.height);
+	Player.prototype = {
+	  moveUp: function () {
+	    this.y = this.y - 3;
 	  },
-	  move: function () {
-	    var speed = 3;
-	    this.x = this.x - speed;
+	  moveDown: function () {
+	    this.y = this.y + 3;
+	  },
+	  draw: function () {
+	    if (this.type === "image") {
+	      this.world.fillStyle = 'black';
+	      this.world.drawImage(this.image, this.x, this.y, this.width, this.height);
+	    } else {
+	      this.world.clearRect(this.x, this.y, this.width, this.height);
+	      this.world.fillStyle = 'white';
+	      this.world.fillRect(this.x, this.y, this.width, this.height);
+	    }
 	  },
 	  topRight: function () {
 	    return { x: this.x + this.width, y: this.y };
@@ -10494,27 +10498,89 @@
 	  },
 	  bottomLeft: function () {
 	    return { x: this.x, y: this.y + this.height };
+	  }
+	};
+
+	module.exports = Player;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	function Obstacle(world, playerHitBoxes, x, y, height, width, speed) {
+	  this.world = world;
+	  this.playerHitBoxes = playerHitBoxes;
+	  this.x = x;
+	  this.y = y;
+	  this.height = height;
+	  this.width = width;
+	  this.speed = speed || 4;
+	}
+
+	Obstacle.prototype = {
+	  draw: function () {
+	    // Create gradient
+	    var grd = this.world.createLinearGradient(0.000, 150.000, 600.000, 150.000);
+	    // Add colors
+	    grd.addColorStop(0.000, 'rgba(255, 0, 0, 1.000)');
+	    grd.addColorStop(0.150, 'rgba(255, 0, 255, 1.000)');
+	    grd.addColorStop(0.330, 'rgba(0, 0, 255, 1.000)');
+	    grd.addColorStop(0.490, 'rgba(0, 255, 255, 1.000)');
+	    grd.addColorStop(0.670, 'rgba(0, 255, 0, 1.000)');
+	    grd.addColorStop(0.840, 'rgba(255, 255, 0, 1.000)');
+	    grd.addColorStop(1.000, 'rgba(255, 0, 0, 1.000)');
+
+	    this.world.clearRect(this.x, this.y, this.width, this.height);
+	    this.world.fillStyle = grd;
+	    this.world.fillRect(this.x, this.y, this.width, this.height);
 	  },
-	  collisionDetect: function () {
-	    var collision = true;
-
-	    var playerLeft = this.player.topLeft().x;
-	    var playerRight = this.player.topRight().x;
-	    var playerTop = this.player.topLeft().y;
-	    var playerBottom = this.player.bottomRight().y;
-
+	  move: function () {
+	    this.x = this.x - this.speed;
+	  },
+	  moveUp: function () {},
+	  moveDown: function () {},
+	  topRight: function () {
+	    return { x: this.x + this.width, y: this.y };
+	  },
+	  topLeft: function () {
+	    return { x: this.x, y: this.y };
+	  },
+	  bottomRight: function () {
+	    return { x: this.x + this.width, y: this.y + this.height };
+	  },
+	  bottomLeft: function () {
+	    return { x: this.x, y: this.y + this.height };
+	  },
+	  collisionDetect: function (player) {
 	    var obsLeft = this.topLeft().x;
 	    var obsRight = this.topRight().x;
 	    var obsTop = this.topLeft().y;
 	    var obsBottom = this.bottomRight().y;
+	    var collision = true;
+
+	    var playerLeft = player.topLeft().x;
+	    var playerRight = player.topRight().x;
+	    var playerTop = player.topLeft().y;
+	    var playerBottom = player.bottomRight().y;
 
 	    if (playerRight < obsLeft || playerLeft > obsRight) {
 	      collision = false;
-	    } else if (playerBottom < obsTop || playerTop > obsBottom) {
+	    }if (playerBottom < obsTop || playerTop > obsBottom) {
 	      collision = false;
 	    }
 
 	    return collision;
+	  },
+
+	  collisionDetectAllBoxes: function () {
+
+	    var results = [];
+
+	    this.playerHitBoxes.forEach(function (player) {
+	      results.push(this.collisionDetect(player));
+	    }.bind(this));
+
+	    return results.includes(true);
 	  }
 	};
 
