@@ -65,51 +65,87 @@ describe('GameWorld', function () {
 
     //Player(world, x, y, height, width, type, image){
     it('player starts safe, moves down, collides with obstacle', function(){
-      var player = new Player(null, 15, 4, 5, 5);
-      var obstacle = new Obstacle(gameWorld, player, 10, 10, 10, 10);
-      assert.equal(obstacle.collisionDetect(), false);
-      player.moveDown();
-      assert.equal(obstacle.collisionDetect(), true);
+
+      var playerHitBoxes = [];
+      playerHitBoxes[0] = new Player(null, 15, 4, 5, 5, "box");
+      playerHitBoxes[1] = new Player(null, 15, 4, 5, 5, "box");
+      playerHitBoxes[2] = new Player(null, 15, 4, 5, 5, "box");
+
+      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      assert.equal(obstacle.collisionDetectAllBoxes(), false);
+      playerHitBoxes[0].moveDown();
+      playerHitBoxes[1].moveDown();
+      playerHitBoxes[2].moveDown();
+      assert.equal(obstacle.collisionDetectAllBoxes(), true);
     });
 
     it('player starts safe, moves down, still safe', function(){
-      var player = new Player(null, 15, 1, 5, 5);
-      var obstacle = new Obstacle(gameWorld, player, 10, 10, 10, 10);
-      assert.equal(obstacle.collisionDetect(), false);
-      player.moveDown();
-      assert.equal(obstacle.collisionDetect(), false);
+
+      var playerHitBoxes = [];
+      playerHitBoxes[0] = new Player(null, 15, 1, 5, 5, "box");
+      playerHitBoxes[1] = new Player(null, 15, 1, 5, 5, "box");
+      playerHitBoxes[2] = new Player(null, 15, 1, 5, 5, "box");
+
+      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      assert.equal(obstacle.collisionDetectAllBoxes(), false);
+      playerHitBoxes[0].moveDown();
+      playerHitBoxes[1].moveDown();
+      playerHitBoxes[2].moveDown();
+      assert.equal(obstacle.collisionDetectAllBoxes(), false);
     });
 
     it('player starts safe, moves up, collides with obstacle', function(){
-      var player = new Player(null, 15, 22, 5, 5);
-      var obstacle = new Obstacle(gameWorld, player, 10, 10, 10, 10);
-      assert.equal(obstacle.collisionDetect(), false);
-      player.moveUp();
-      assert.equal(obstacle.collisionDetect(), true);
+
+      var playerHitBoxes = [];
+      playerHitBoxes[0] = new Player(null, 15, 22, 5, 5, "box");
+      playerHitBoxes[1] = new Player(null, 15, 22, 5, 5, "box");
+      playerHitBoxes[2] = new Player(null, 15, 22, 5, 5, "box");
+
+      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      assert.equal(obstacle.collisionDetectAllBoxes(), false);
+      playerHitBoxes[0].moveUp();
+      playerHitBoxes[1].moveUp();
+      playerHitBoxes[2].moveUp();
+      assert.equal(obstacle.collisionDetectAllBoxes(), true);
     });
 
     it('player starts safe, moves up, still safe', function(){
-      var player = new Player(null, 15, 25, 5, 5);
-      var obstacle = new Obstacle(gameWorld, player, 10, 10, 10, 10);
-      assert.equal(obstacle.collisionDetect(), false);
-      player.moveUp();
-      assert.equal(obstacle.collisionDetect(), false);
+      var playerHitBoxes = [];
+      playerHitBoxes[0] = new Player(null, 15, 25, 5, 5, "box");
+      playerHitBoxes[1] = new Player(null, 15, 25, 5, 5, "box");
+      playerHitBoxes[2] = new Player(null, 15, 25, 5, 5, "box");
+
+      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      assert.equal(obstacle.collisionDetectAllBoxes(), false);
+      playerHitBoxes[0].moveUp();
+      playerHitBoxes[1].moveUp();
+      playerHitBoxes[2].moveUp();
+      assert.equal(obstacle.collisionDetectAllBoxes(), false);
     });
 
     it('player starts safe, obstacle moves, collides with obstacle', function(){
-      var player = new Player(null, 4, 15, 5, 5);
-      var obstacle = new Obstacle(gameWorld, player, 10, 10, 10, 10);
-      assert.equal(obstacle.collisionDetect(), false);
+      var playerHitBoxes = [];
+      playerHitBoxes[0] = new Player(null, 4, 15, 5, 5, "box");
+      playerHitBoxes[1] = new Player(null, 4, 15, 5, 5, "box");
+      playerHitBoxes[2] = new Player(null, 4, 15, 5, 5, "box");
+
+      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      assert.equal(obstacle.collisionDetectAllBoxes(), false);
       obstacle.move();
-      assert.equal(obstacle.collisionDetect(), true);
+      assert.equal(obstacle.collisionDetectAllBoxes(), true);
     });
 
     it('player starts safe, obstacle moves, still safe', function(){
-      var player = new Player(null, 1, 15, 5, 5);
-      var obstacle = new Obstacle(gameWorld, player, 10, 10, 10, 10);
-      assert.equal(obstacle.collisionDetect(), false);
+      var playerHitBoxes = [];
+      playerHitBoxes[0] = new Player(null, 0, 15, 5, 5, "box");
+      playerHitBoxes[1] = new Player(null, 0, 15, 5, 5, "box");
+      playerHitBoxes[2] = new Player(null, 0, 15, 5, 5, "box");
+      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      obstacle.x = obstacle.speed + 1;
+
+      assert.equal(obstacle.collisionDetectAllBoxes(), false);
       obstacle.move();
-      assert.equal(obstacle.collisionDetect(), false);
+      assert.equal(obstacle.collisionDetectAllBoxes(), false);
     });
 
 
