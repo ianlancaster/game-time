@@ -43,11 +43,11 @@ describe('GameWorld', function () {
     it('gameWorld.moveObstacles should be a method', function () {
       assert.isFunction(gameWorld.moveObstacles, true);
     });
-    it('gameWorld.generateNewObstacleHeight should be a method', function () {
-      assert.isFunction(gameWorld.generateNewObstacleHeight, true);
+    it('gameWorld.generateNewWallsHeight should be a method', function () {
+      assert.isFunction(gameWorld.generateNewWallHeight, true);
     });
-    it('gameWorld.shiftObstacles should be a method', function () {
-      assert.isFunction(gameWorld.shiftObstacles, true);
+    it('gameWorld.shiftWalls should be a method', function () {
+      assert.isFunction(gameWorld.shiftWalls, true);
     });
     it('gameWorld.clearWorld should be a method', function () {
       assert.isFunction(gameWorld.clearWorld, true);
