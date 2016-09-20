@@ -4,64 +4,56 @@ const Obstacle = require('../lib/obstacle');
 const Player = require('../lib/player');
 const World = require('../lib/world');
 
-describe('GameWorld', function () {
+describe('World', function () {
   context('default checks', function(){
-    var gameWorld = new World();
-    it('World should be a function', function () {
+    var world = new World();
+    it('world should be a function', function () {
       assert.isFunction(World, true);
     });
-    it('GameWorld should be an object', function () {
-      assert.isObject(gameWorld, true);
+    it('world should be an object', function () {
+      assert.isObject(world, true);
     });
-    it('gameWorld.initObstacles should be a method', function () {
-      assert.isFunction(gameWorld.initObstacles, true);
+    it('world.initObstacles should be a method', function () {
+      assert.isFunction(world.initObstacles, true);
     });
-    it('gameWorld.drawObstacles should be a method', function () {
-      assert.isFunction(gameWorld.drawObstacles, true);
+    it('world.drawObstacles should be a method', function () {
+      assert.isFunction(world.drawObstacles, true);
     });
-    it('gameWorld.init should be a method', function () {
-      assert.isFunction(gameWorld.init, true);
+    it('world.init should be a method', function () {
+      assert.isFunction(world.init, true);
     });
-    it('gameWorld.mouseDown should be a method', function () {
-      assert.isFunction(gameWorld.mouseDown, true);
+  
+    it('world.reset should be a method', function () {
+      assert.isFunction(world.reset, true);
     });
-    it('gameWorld.mouseUp should be a method', function () {
-      assert.isFunction(gameWorld.mouseUp, true);
+    // it('world.setGameOptions should be a method', function () {
+    //   assert.isFunction(world.setGameOptions, true);
+    // });
+    it('world.createNewRock should be a method', function () {
+      assert.isFunction(world.createNewRock, true);
     });
-    it('gameWorld.gameFrame should be a method', function () {
-      assert.isFunction(gameWorld.gameFrame, true);
+    it('world.moveObstacles should be a method', function () {
+      assert.isFunction(world.moveObstacles, true);
     });
-    it('gameWorld.reset should be a method', function () {
-      assert.isFunction(gameWorld.reset, true);
+    // it('world.generateNewWallsHeight should be a method', function () {
+    //   assert.isFunction(world.generateNewWallHeight, true);
+    // });
+    it('world.shiftWalls should be a method', function () {
+      assert.isFunction(world.shiftWalls, true);
     });
-    it('gameWorld.setGameOptions should be a method', function () {
-      assert.isFunction(gameWorld.setGameOptions, true);
+    it('world.clearworld should be a method', function () {
+      assert.isFunction(world.clearWorld, true);
     });
-    it('gameWorld.createNewRock should be a method', function () {
-      assert.isFunction(gameWorld.createNewRock, true);
+    it('World.drawObstacles should be a method', function () {
+      assert.isFunction(world.drawObstacles, true);
     });
-    it('gameWorld.moveObstacles should be a method', function () {
-      assert.isFunction(gameWorld.moveObstacles, true);
-    });
-    it('gameWorld.generateNewWallsHeight should be a method', function () {
-      assert.isFunction(gameWorld.generateNewWallHeight, true);
-    });
-    it('gameWorld.shiftWalls should be a method', function () {
-      assert.isFunction(gameWorld.shiftWalls, true);
-    });
-    it('gameWorld.clearWorld should be a method', function () {
-      assert.isFunction(gameWorld.clearWorld, true);
-    });
-    it('gameWorld.drawObstacles should be a method', function () {
-      assert.isFunction(gameWorld.drawObstacles, true);
-    });
-    it('gameWorld.draw should be a method', function () {
-      assert.isFunction(gameWorld.draw, true);
+    it('world.draw should be a method', function () {
+      assert.isFunction(world.draw, true);
     });
   });
 
   context('collision checks pre and post moves', function(){
-    var gameWorld = new World();
+    var world = new World();
 
     //Player(world, x, y, height, width, type, image){
     it('player starts safe, moves down, collides with obstacle', function(){
@@ -71,7 +63,7 @@ describe('GameWorld', function () {
       playerHitBoxes[1] = new Player(null, 15, 4, 5, 5, "box");
       playerHitBoxes[2] = new Player(null, 15, 4, 5, 5, "box");
 
-      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      var obstacle = new Obstacle(World, playerHitBoxes, 10, 10, 10, 10);
       assert.equal(obstacle.collisionDetectAllBoxes(), false);
       playerHitBoxes[0].moveDown();
       playerHitBoxes[1].moveDown();
@@ -86,7 +78,7 @@ describe('GameWorld', function () {
       playerHitBoxes[1] = new Player(null, 15, 1, 5, 5, "box");
       playerHitBoxes[2] = new Player(null, 15, 1, 5, 5, "box");
 
-      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      var obstacle = new Obstacle(world, playerHitBoxes, 10, 10, 10, 10);
       assert.equal(obstacle.collisionDetectAllBoxes(), false);
       playerHitBoxes[0].moveDown();
       playerHitBoxes[1].moveDown();
@@ -101,7 +93,7 @@ describe('GameWorld', function () {
       playerHitBoxes[1] = new Player(null, 15, 22, 5, 5, "box");
       playerHitBoxes[2] = new Player(null, 15, 22, 5, 5, "box");
 
-      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      var obstacle = new Obstacle(world, playerHitBoxes, 10, 10, 10, 10);
       assert.equal(obstacle.collisionDetectAllBoxes(), false);
       playerHitBoxes[0].moveUp();
       playerHitBoxes[1].moveUp();
@@ -115,7 +107,7 @@ describe('GameWorld', function () {
       playerHitBoxes[1] = new Player(null, 15, 25, 5, 5, "box");
       playerHitBoxes[2] = new Player(null, 15, 25, 5, 5, "box");
 
-      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      var obstacle = new Obstacle(world, playerHitBoxes, 10, 10, 10, 10);
       assert.equal(obstacle.collisionDetectAllBoxes(), false);
       playerHitBoxes[0].moveUp();
       playerHitBoxes[1].moveUp();
@@ -129,7 +121,7 @@ describe('GameWorld', function () {
       playerHitBoxes[1] = new Player(null, 4, 15, 5, 5, "box");
       playerHitBoxes[2] = new Player(null, 4, 15, 5, 5, "box");
 
-      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      var obstacle = new Obstacle(world, playerHitBoxes, 10, 10, 10, 10);
       assert.equal(obstacle.collisionDetectAllBoxes(), false);
       obstacle.move();
       assert.equal(obstacle.collisionDetectAllBoxes(), true);
@@ -140,7 +132,7 @@ describe('GameWorld', function () {
       playerHitBoxes[0] = new Player(null, 0, 15, 5, 5, "box");
       playerHitBoxes[1] = new Player(null, 0, 15, 5, 5, "box");
       playerHitBoxes[2] = new Player(null, 0, 15, 5, 5, "box");
-      var obstacle = new Obstacle(gameWorld, playerHitBoxes, 10, 10, 10, 10);
+      var obstacle = new Obstacle(world, playerHitBoxes, 10, 10, 10, 10);
       obstacle.x = obstacle.speed + 1;
 
       assert.equal(obstacle.collisionDetectAllBoxes(), false);
