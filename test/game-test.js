@@ -1,7 +1,6 @@
 const assert = require('chai').assert;
 
 const Game = require('../lib/game');
-const World = require('../lib/world');
 
 describe('Game', function () {
   context('default checks', function(){
@@ -16,11 +15,11 @@ describe('Game', function () {
     it('game.init should be a method', function () {
       assert.isFunction(game.init, true);
     });
-    it('game.mouseDown should be a method', function () {
-      assert.isFunction(game.mouseDown, true);
+    it('game.spacebarDown should be a method', function () {
+      assert.isFunction(game.spacebarDown, true);
     });
-    it('game.mouseUp should be a method', function () {
-      assert.isFunction(game.mouseUp, true);
+    it('game.spacebarUp should be a method', function () {
+      assert.isFunction(game.spacebarUp, true);
     });
     it('game.gameFrame should be a method', function () {
       assert.isFunction(game.gameFrame, true);
@@ -40,9 +39,11 @@ describe('Game', function () {
     it('game.generateNewWallHeight should be a method', function () {
       assert.isFunction(game.generateNewWallHeight, true);
     });
-
+    it('game.executeMushroomFunctions should be a method', function () {
+      assert.isFunction(game.executeMushroomFunctions, true);
+    });
   });
-  
+
   context('game checks', function(){
     var canvas = document.getElementById('world');
     var context = canvas.getContext('2d');
@@ -54,6 +55,33 @@ describe('Game', function () {
       assert.equal(game.difficultyFactor, 1);
       assert.equal(game.distanceCount, 0);
     });
+
+    it('spacebar.Down moves hitbox and player up', function(){
+      var fishStart = game.world.playerFish.y;
+      var hitboxStart = game.world.playerHitBoxes[0].y;
+      game.spacebarDown();
+      game.spacebarDown();
+      var fishStop = game.world.playerFish.y;
+      var hitboxStop = game.world.playerHitBoxes[0].y;
+      assert.isAbove(fishStart, fishStop);
+      assert.isAbove(hitboxStart, hitboxStop);
+    });
+
+    it('increaseDifficulty() increases the difficulty factor by .05', function(){
+      game.distanceCount = 50;
+      var startDifficulty = game.difficultyFactor;
+      game.increaseDifficulty();
+      assert.equal(game.difficultyFactor, startDifficulty+0.05);
+    });
+
+    it('increaeRockFrequency increases decreases the rock frequency factor by 10', function(){
+      var startFrequency = game.rockFrequency;
+      game.increaseRockFrequency();
+      assert.equal(game.rockFrequency, startFrequency-10);
+    });
+
+
+
 
   });
 });
