@@ -1,0 +1,47 @@
+.div3 {
+    position: absolute !important;
+    height: 20px;
+    width: 50px;
+    border: solid 1px magenta;
+    top: 15px;
+    left: 30px;
+}
+.div2 {
+    position: absolute !important;
+    height: 20px;
+    width: 65px;
+    border: solid 1px aqua;
+    top: 5px;
+    left: 20px;
+}
+.div1 {
+    position: absolute !important;
+    height: 15px;
+    width: 90px;
+    border: solid 1px red;
+    top: 15px;
+    left: 5px;
+}
+
+box1:
+  x = 205
+  y = 265
+  height = 15
+  width = 90
+
+box 2:
+x = 220
+y = 255
+height = 20
+width = 65
+
+box 2:
+x = 230
+y = 265
+height = 20
+width = 50
+
+this.x = x || 200;
+this.y = y || 250;
+this.height = height || 40;
+this.width = width || 100;
