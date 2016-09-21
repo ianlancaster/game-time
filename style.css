@@ -3,8 +3,16 @@
   text-align: center;
 }
 
+@font-face {
+  /*font-family: 'Handlee', cursive;
+  src: url('https://fonts.googleapis.com/css?family=Handlee');*/
+  font-family: 'KulminoituvaRegular';
+    src: url('http://www.miketaylr.com/f/kulminoituva.ttf');
+}
+
 body{
   background-image: url('./lib/imgs/seaBackground.jpg');
+
 }
 
 canvas{
@@ -17,6 +25,12 @@ div{
 }
 
 h1{
-font-family: 'Handlee', cursive;
+  font-family: 'Handlee', cursive;
   font-size: 50px;
+  margin: 10px;
+}
+
+h2{
+  font-family: 'Handlee', cursive;
+  font-size: 20px;
 }
