@@ -68,7 +68,8 @@
 
 	$document.keypress(function (e) {
 
-	  // upSound.play();
+	  upSound.volume = 0.3;
+	  upSound.play();
 
 	  if (e.keyCode === 0 || e.keyCode === 32) {
 	    e.preventDefault();
@@ -10223,6 +10224,7 @@
 	  this.reset = function () {
 	    this.difficultyFactor = 1;
 	    this.distanceCount = 0;
+	    this.rockFrequency = 100;
 	    this.scoreboard.resetScore();
 	    this.world.reset();
 	    this.tweezer = new Audio('./lib/audio/tweezer.mp3');
@@ -10311,6 +10313,7 @@
 	      this.scoreboard.addValueToScore(500);
 	    }
 	    if (this.rainbowMode === true && this.tweezerIsPlaying === false) {
+	      this.tweezer.volume = 1;
 	      this.tweezer.play();
 	      this.tweezerIsPlaying = true;
 	    }

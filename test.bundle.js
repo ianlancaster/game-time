@@ -96,6 +96,7 @@
 	  this.reset = function () {
 	    this.difficultyFactor = 1;
 	    this.distanceCount = 0;
+	    this.rockFrequency = 100;
 	    this.scoreboard.resetScore();
 	    this.world.reset();
 	    this.tweezer = new Audio('./lib/audio/tweezer.mp3');
@@ -184,6 +185,7 @@
 	      this.scoreboard.addValueToScore(500);
 	    }
 	    if (this.rainbowMode === true && this.tweezerIsPlaying === false) {
+	      this.tweezer.volume = 1;
 	      this.tweezer.play();
 	      this.tweezerIsPlaying = true;
 	    }
@@ -691,8 +693,8 @@
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
-		module.hot.accept("!!/Users/CleanStack/OneDrive - OctoMarketing/Personal/Documents/Learning/Turing School/Projects/game-time/node_modules/mocha-loader/node_modules/css-loader/index.js!/Users/CleanStack/OneDrive - OctoMarketing/Personal/Documents/Learning/Turing School/Projects/game-time/node_modules/mocha/mocha.css", function() {
-			var newContent = require("!!/Users/CleanStack/OneDrive - OctoMarketing/Personal/Documents/Learning/Turing School/Projects/game-time/node_modules/mocha-loader/node_modules/css-loader/index.js!/Users/CleanStack/OneDrive - OctoMarketing/Personal/Documents/Learning/Turing School/Projects/game-time/node_modules/mocha/mocha.css");
+		module.hot.accept("!!/Users/milkman/turing/projects/game-time/node_modules/mocha-loader/node_modules/css-loader/index.js!/Users/milkman/turing/projects/game-time/node_modules/mocha/mocha.css", function() {
+			var newContent = require("!!/Users/milkman/turing/projects/game-time/node_modules/mocha-loader/node_modules/css-loader/index.js!/Users/milkman/turing/projects/game-time/node_modules/mocha/mocha.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
